@@ -1,0 +1,53 @@
+apply from: 'dependencies.gradle'
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+
+    defaultConfig {
+        minSdkVersion 22
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    sourceSets {
+        main.java.srcDirs = ['src/main/kotlin']
+        debug.java.srcDirs = ['src/debug/kotlin']
+        release.java.srcDirs = ['src/release/kotlin']
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation libraries.kotlin
+    implementation libraries.coroutines
+    implementation libraries.lifecycle_ktx
+    api libraries.okhttp
+    implementation libraries.customtabs
+    implementation libraries.browser
+    implementation libraries.gson
+
+    debugImplementation libraries.okhttp_logging
+}

@@ -1,0 +1,2 @@
+-keep com.duglasher.fitbitauth.exceptions.** { *; }
+-keep com.duglasher.fitbitauth.data.** { *; }

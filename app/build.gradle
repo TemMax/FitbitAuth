@@ -1,0 +1,46 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+
+    defaultConfig {
+        applicationId "com.duglasher.fitbitauth"
+        minSdkVersion 22
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        Properties props = new Properties()
+        props.load(project.rootProject.file('local.properties').newDataInputStream())
+        def clientId = props.getProperty('fitbit.client_id')
+        def clientSecret = props.getProperty('fitbit.client_secret')
+        def redirectUrl = props.getProperty('fitbit.redirect_url')
+        def redirectSplitted = redirectUrl.split('://')
+
+        buildTypes.each { type ->
+            type.buildConfigField "String", "CLIENT_ID", "\"$clientId\""
+            type.buildConfigField "String", "CLIENT_SECRET", "\"$clientSecret\""
+            type.buildConfigField "String", "REDIRECT_URL", "\"$redirectUrl\""
+
+            type.manifestPlaceholders = [redirectScheme: redirectSplitted[0], redirectHost: redirectSplitted[1]]
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation project(path: ':fitbitauth')
+}
