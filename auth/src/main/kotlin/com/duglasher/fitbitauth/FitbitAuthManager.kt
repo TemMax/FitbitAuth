@@ -16,7 +16,6 @@ import com.duglasher.fitbitauth.utils.FitbitApiResult
 import com.duglasher.fitbitauth.utils.Prefs
 import com.duglasher.fitbitauth.utils.configDependent
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -105,9 +104,7 @@ object FitbitAuthManager {
 
 	@Synchronized
 	fun logout() {
-		GlobalScope.launch(Dispatchers.IO) {
-			FitbitApi.logout(accountManager.get().accessToken, authConfig)
-		}
+		FitbitApi.logout(accountManager.get().accessToken, authConfig)
 		accountManager.logout()
 	}
 

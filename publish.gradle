@@ -1,0 +1,24 @@
+ext {
+    github_username = 'TemMax'
+    github_repository_name = 'FitbitAuth'
+
+    bintray_repo = 'Fitbit'
+    bintray_project_name = 'Auth'
+
+    siteUrl = "https://github.com/${github_username}/${github_repository_name}"
+    gitUrl = siteUrl + '.git'
+    bugTrackerUrl = siteUrl + '/issues/'
+
+    library_description = 'A library that simplifies Fitbit authorization'
+    library_keywords = ['android', 'library', 'fitbit', 'kotlin', 'coroutines']
+    library_project_group = 'com.duglasher.fitbit'
+    library_licenses = ["Unlicense"]
+    library_version = '1.0'
+    version_code = 1
+    min_sdk = 22
+    target_sdk = 29
+    compile_sdk = 29
+}
+
+apply from: rootProject.file('bintray/maven.gradle')
+apply from: rootProject.file('bintray/bintray.gradle')

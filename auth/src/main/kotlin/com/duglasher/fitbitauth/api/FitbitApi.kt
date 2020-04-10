@@ -3,8 +3,8 @@ package com.duglasher.fitbitauth.api
 import com.duglasher.fitbitauth.data.AuthorizationConfiguration
 import com.duglasher.fitbitauth.data.Credentials
 import com.duglasher.fitbitauth.utils.*
-import okhttp3.FormBody
-import okhttp3.Request
+import okhttp3.*
+import java.io.IOException
 
 
 internal object FitbitApi {
@@ -48,7 +48,10 @@ internal object FitbitApi {
 
 		val request = createRequest(REVOKE_URL, authConfig.credentials, body)
 
-		client.newCall(request).execute()
+		client.newCall(request).enqueue(object : Callback {
+			override fun onFailure(call: Call, e: IOException) = Unit
+			override fun onResponse(call: Call, response: Response) = Unit
+		})
 	}
 
 	private fun createFormBodyOf(vararg params: Pair<String, String>): FormBody {

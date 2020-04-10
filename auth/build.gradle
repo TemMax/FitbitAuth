@@ -1,17 +1,21 @@
+apply from: rootProject.file('publish.gradle')
 apply from: 'dependencies.gradle'
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+group = library_project_group
+version = library_version
+
 android {
-    compileSdkVersion 29
+    compileSdkVersion compile_sdk
     buildToolsVersion "29.0.2"
 
     defaultConfig {
-        minSdkVersion 22
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion min_sdk
+        targetSdkVersion target_sdk
+        versionCode version_code
+        versionName library_version
 
         consumerProguardFiles 'consumer-rules.pro'
     }
@@ -51,3 +55,5 @@ dependencies {
 
     debugImplementation libraries.okhttp_logging
 }
+
+apply from: 'https://raw.githubusercontent.com/sky-uk/gradle-maven-plugin/master/gradle-mavenizer.gradle'

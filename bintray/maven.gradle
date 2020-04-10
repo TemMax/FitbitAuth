@@ -1,0 +1,8 @@
+project.ext {
+    mavDevelopers = ["TemMax": "Artsiom"]
+    mavSiteUrl = siteUrl
+    mavGitUrl = gitUrl
+    mavProjectName = bintray_repo + bintray_project_name
+    mavLibraryLicenses = ["Unlicense": 'https://unlicense.org/']
+    mavLibraryDescription = library_description
+}
