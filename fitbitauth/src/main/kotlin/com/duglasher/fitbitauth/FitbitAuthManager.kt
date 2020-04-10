@@ -106,9 +106,9 @@ object FitbitAuthManager {
 	@Synchronized
 	fun logout() {
 		GlobalScope.launch(Dispatchers.IO) {
-			accountManager.logout()
 			FitbitApi.logout(accountManager.get().accessToken, authConfig)
 		}
+		accountManager.logout()
 	}
 
 	@Synchronized
