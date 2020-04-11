@@ -14,10 +14,7 @@
 bin/
 gen/
 out/
-release/
-
-# Exclude build type dependent code
-!fitbitauth/src/release
+#release/
 
 # Gradle files
 .gradle/
