@@ -10,6 +10,7 @@ internal object GsonHelper {
 
     inline fun <reified T> fromJson(json: String): T =
         gson.fromJson<T>(json, object : TypeToken<T>() {}.type)
+
     inline fun <reified T> fromJson(reader: Reader): T =
         gson.fromJson<T>(reader, object : TypeToken<T>() {}.type)
 

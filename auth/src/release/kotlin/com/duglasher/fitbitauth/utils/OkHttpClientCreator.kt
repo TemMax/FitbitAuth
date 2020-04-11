@@ -6,10 +6,10 @@ import java.util.concurrent.TimeUnit
 
 object OkHttpClientCreator {
 
-	fun create() = OkHttpClient.Builder().apply {
-		connectTimeout(30, TimeUnit.SECONDS)
-		readTimeout(30, TimeUnit.SECONDS)
-		writeTimeout(30, TimeUnit.SECONDS)
-	}.build()
+    fun create() = OkHttpClient.Builder().apply {
+        connectTimeout(30, TimeUnit.SECONDS)
+        readTimeout(30, TimeUnit.SECONDS)
+        writeTimeout(30, TimeUnit.SECONDS)
+    }.build()
 
 }
