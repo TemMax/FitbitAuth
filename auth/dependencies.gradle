@@ -5,7 +5,6 @@ ext.versions = [
         okhttp       : '4.5.0',
         customtabs   : '3.0.2',
         browser      : '1.2.0',
-        gson         : '2.8.6'
 ]
 
 ext.libraries = [
@@ -16,5 +15,4 @@ ext.libraries = [
         okhttp_logging: "com.squareup.okhttp3:logging-interceptor:$versions.okhttp",
         customtabs    : "saschpe.android:customtabs:$versions.customtabs",
         browser       : "androidx.browser:browser:$versions.browser",
-        gson          : "com.google.code.gson:gson:$versions.gson"
 ]

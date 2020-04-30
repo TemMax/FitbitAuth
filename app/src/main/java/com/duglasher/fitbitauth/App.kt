@@ -6,9 +6,12 @@ import com.duglasher.fitbitauth.data.AuthorizationConfiguration
 
 class App : Application() {
 
+	lateinit var fitBitAuth: FitbitAuthManager
+		private set
+
 	override fun onCreate() {
 		super.onCreate()
-		FitbitAuthManager.configure(
+		fitBitAuth = FitbitAuthManager(
 			this,
 			AuthorizationConfiguration.Builder()
 				.setCredentials(

@@ -10,5 +10,5 @@ enum class Scope {
     settings,
     sleep,
     social,
-    weight
+    weight,
 }

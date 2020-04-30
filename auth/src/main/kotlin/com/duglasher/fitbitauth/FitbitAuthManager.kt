@@ -11,10 +11,8 @@ import com.duglasher.fitbitauth.api.ErrorFitbitResponse
 import com.duglasher.fitbitauth.api.FitbitApi
 import com.duglasher.fitbitauth.data.AuthorizationConfiguration
 import com.duglasher.fitbitauth.exceptions.NotAllowedRequiredScopesException
-import com.duglasher.fitbitauth.utils.BASE_AUTH_URL
 import com.duglasher.fitbitauth.utils.FitbitApiResult
-import com.duglasher.fitbitauth.utils.Prefs
-import com.duglasher.fitbitauth.utils.configDependent
+import com.duglasher.fitbitauth.utils.OkHttpClientCreator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,46 +21,28 @@ import saschpe.android.customtabs.CustomTabsHelper
 import kotlin.random.Random
 
 
-object FitbitAuthManager {
+class FitbitAuthManager(
+    appContext: Context,
+    private val authConfig: AuthorizationConfiguration,
+    private val customTabsIntent: CustomTabsIntent = CustomTabsIntent.Builder()
+        .setToolbarColor(0xFFFEFEFE.toInt())
+        .setShowTitle(true)
+        .build(),
+    okHttpClient: OkHttpClient = OkHttpClientCreator.create()
+) {
+    
+    private val api = FitbitApi(okHttpClient)
 
     private val state: String = Random.nextInt(10000, 99999).toString()
 
-    private var customTabsIntent = CustomTabsIntent.Builder()
-        .setToolbarColor(0xFFFEFEFE.toInt())
-        .setShowTitle(true)
-        .build()
+    private val accountManager: AccountManager = AccountManager(appContext)
 
-    private var configured = false
-
-    private var prefs: Prefs by configDependent { configured }
-    private var accountManager: AccountManager by configDependent { configured }
-    private var authConfig: AuthorizationConfiguration by configDependent { configured }
-
-    fun configure(appContext: Context, authConfig: AuthorizationConfiguration) {
-        this.configured = true
-
-        this.prefs = Prefs(appContext)
-        this.accountManager = AccountManager(prefs)
-        this.authConfig = authConfig
-    }
-
-    fun setCustomTabsIntent(intent: CustomTabsIntent) {
-        this.customTabsIntent = intent
-    }
-
-    fun setOkHttpClient(client: OkHttpClient) {
-        FitbitApi.client = client
-    }
-
-    @Synchronized
     fun getAccessToken() = accountManager.get()
 
-    @Synchronized
     fun isLoggedIn() = accountManager.isLoggedIn()
 
-    @Synchronized
     fun login(activity: Activity) {
-        val authUri = Uri.parse(BASE_AUTH_URL).buildUpon().apply {
+        val authUri = Uri.parse(FitbitApi.BASE_AUTH_URL).buildUpon().apply {
             appendQueryParameter("client_id", authConfig.credentials.clientId)
             appendQueryParameter("redirect_uri", authConfig.credentials.redirectUrl)
             if (authConfig.scopes.isNotEmpty()) {
@@ -90,7 +70,7 @@ object FitbitAuthManager {
     @Synchronized
     suspend fun refreshToken(): FitbitAuthResult {
         val tokenResult = withContext(Dispatchers.IO) {
-            FitbitApi.refreshToken(accountManager.get().refreshToken, authConfig)
+            api.refreshToken(accountManager.get().refreshToken, authConfig)
         }
         return when (tokenResult) {
             is FitbitApiResult.Success   -> {
@@ -104,7 +84,7 @@ object FitbitAuthManager {
 
     @Synchronized
     fun logout() {
-        FitbitApi.logout(accountManager.get().accessToken, authConfig)
+        api.logout(accountManager.get().accessToken, authConfig)
         accountManager.logout()
     }
 
@@ -124,7 +104,7 @@ object FitbitAuthManager {
                 val error = authUri.getQueryParameter("error")
                 val errorDescription = authUri.getQueryParameter("error_description") ?: ""
                 if (error == null) {
-                    authUser(activity, authUri.getQueryParameter("code")!!)
+                    authUserLocked(activity, authUri.getQueryParameter("code")!!)
                 } else {
                     activity.onAuthResult(
                         FitbitAuthResult.Error(
@@ -141,17 +121,17 @@ object FitbitAuthManager {
         }
     }
 
-    private fun <A> authUser(
+    private fun <A> authUserLocked(
         activity: A,
         authCode: String
     ) where A : LifecycleOwner, A : FitbitAuthHandler {
         activity.lifecycleScope.launch {
             val tokenResult = withContext(Dispatchers.IO) {
-                FitbitApi.requestAccessToken(authCode, authConfig)
+                api.requestAccessToken(authCode, authConfig)
             }
             when (tokenResult) {
                 is FitbitApiResult.Success   -> {
-                    val allowedScopes = tokenResult.value.scope.split(" ").map(Scope::valueOf)
+                    val allowedScopes = tokenResult.value.scopes
                     val deniedRequiredScopes = authConfig.scopes subtract allowedScopes
                     if (deniedRequiredScopes.isEmpty()) {
                         accountManager.save(tokenResult.value)
