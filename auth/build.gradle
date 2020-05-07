@@ -49,9 +49,8 @@ dependencies {
     implementation libraries.coroutines
     implementation libraries.lifecycle_ktx
     api libraries.okhttp
-    implementation libraries.customtabs
-    implementation libraries.browser
-    implementation libraries.gson
+    api libraries.customtabs
+    api libraries.browser
 
     debugImplementation libraries.okhttp_logging
 }

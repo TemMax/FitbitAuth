@@ -1,42 +1,25 @@
 package com.duglasher.fitbitauth.data
 
-import androidx.collection.ArraySet
 import com.duglasher.fitbitauth.Scope
-import com.duglasher.fitbitauth.api.FitbitAccessTokenResponse
-import com.google.gson.annotations.SerializedName
+import com.duglasher.fitbitauth.utils.mapStringsTo
+import org.json.JSONObject
+import java.util.*
 
 
 data class FitbitAccessToken internal constructor(
-    @SerializedName("access_token")
-    val accessToken: String,
-    @SerializedName("refresh_token")
-    val refreshToken: String,
-    @SerializedName("scopes")
-    val scopes: Set<Scope>,
-    @SerializedName("expiration_date")
-    val expirationDate: Long,
-    @SerializedName("token_type")
-    val tokenType: String,
-    @SerializedName("user_id")
-    val userId: String
+    private val json: JSONObject
 ) {
+
+    val accessToken: String get() = json.optString("access_token", null)
+    val refreshToken: String get() = json.optString("refresh_token", null)
+    val scopes: Set<Scope> get() = json.optJSONArray("scopes").mapStringsTo(EnumSet.noneOf(Scope::class.java), Scope::valueOf)
+    val expirationDate: Long get() = json.optLong("expiration_date", 0L)
+    val tokenType: String get() = json.optString("token_type", null)
+    val userId: String get() = json.optString("user_id", null)
 
     val isExpired: Boolean
         get() = expirationDate < System.currentTimeMillis() / 1000
 
-    internal companion object {
-        fun fromResponse(response: FitbitAccessTokenResponse): FitbitAccessToken {
-            return with(response) {
-                FitbitAccessToken(
-                    accessToken,
-                    refreshToken,
-                    scope.split(' ').mapTo(ArraySet(), Scope::valueOf),
-                    System.currentTimeMillis() + expiresIn,
-                    tokenType,
-                    userId
-                )
-            }
-        }
-    }
+    fun toJson(): String = json.toString()
 
 }

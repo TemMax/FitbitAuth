@@ -6,8 +6,8 @@ import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
 import okhttp3.ResponseBody
+import org.json.JSONObject
 import java.io.IOException
-import java.io.Reader
 import kotlin.coroutines.resumeWithException
 
 
@@ -17,7 +17,7 @@ internal sealed class FitbitApiResult<out T> {
     class Exception(val exception: Throwable) : FitbitApiResult<Nothing>()
 }
 
-internal suspend fun <T> Call.awaitResult(converter: (Reader) -> T): FitbitApiResult<T> {
+internal suspend fun <T> Call.awaitResult(converter: (String) -> T): FitbitApiResult<T> {
     return suspendCancellableCoroutine { continuation ->
         enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
@@ -25,9 +25,9 @@ internal suspend fun <T> Call.awaitResult(converter: (Reader) -> T): FitbitApiRe
                     val body: ResponseBody? = response.body
                     if (body != null) {
                         if (response.isSuccessful) {
-                            FitbitApiResult.Success(converter(body.charStream()))
+                            FitbitApiResult.Success(converter(body.string()))
                         } else {
-                            FitbitApiResult.Error(GsonHelper.fromJson(body.charStream()))
+                            FitbitApiResult.Error(ErrorFitbitResponse(JSONObject(body.string())))
                         }
                     } else {
                         FitbitApiResult.Exception(Exception("Response body is null"))

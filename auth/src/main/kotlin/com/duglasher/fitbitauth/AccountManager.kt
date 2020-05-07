@@ -1,22 +1,21 @@
 package com.duglasher.fitbitauth
 
-import com.duglasher.fitbitauth.api.FitbitAccessTokenResponse
+import android.content.Context
 import com.duglasher.fitbitauth.data.FitbitAccessToken
 import com.duglasher.fitbitauth.exceptions.FitbitNotAuthenticatedException
-import com.duglasher.fitbitauth.utils.Prefs
+import org.json.JSONObject
 
 
-internal class AccountManager(private val prefs: Prefs) {
+internal class AccountManager(context: Context) {
 
-    private companion object {
-        private var token: FitbitAccessToken? = null
-    }
+    private val prefs = context.getSharedPreferences("app_fitbit_prefs", Context.MODE_PRIVATE)
 
     fun get(): FitbitAccessToken {
-        if (token == null) {
-            token = prefs.getAccessToken()
-        }
-        return token!!
+        val tokenJson = prefs.getString(ACCESS_TOKEN_KEY, "")!!
+        if (tokenJson.isBlank()) {
+                throw FitbitNotAuthenticatedException()
+            }
+        return FitbitAccessToken(JSONObject(tokenJson))
     }
 
     fun isLoggedIn(): Boolean {
@@ -27,16 +26,16 @@ internal class AccountManager(private val prefs: Prefs) {
         }
     }
 
-    fun save(response: FitbitAccessTokenResponse) {
-        val accessToken = FitbitAccessToken.fromResponse(response)
-        prefs.saveAccessToken(accessToken)
-
-        token = accessToken
+    fun save(token: FitbitAccessToken) {
+        prefs.edit().putString(ACCESS_TOKEN_KEY, token.toJson()).apply()
     }
 
     fun logout() {
-        prefs.deleteAccessToken()
-        token = null
+        prefs.edit().remove(ACCESS_TOKEN_KEY).apply()
+    }
+
+    private companion object {
+        private const val ACCESS_TOKEN_KEY = "app_fitbit_prefs.access_token"
     }
 
 }

@@ -10,16 +10,19 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), FitbitAuthHandler {
 
+	private lateinit var fitBitAuth: FitbitAuthManager
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 
+		fitBitAuth = (application as App).fitBitAuth
+
 		btnLogin.setOnClickListener {
-			if (FitbitAuthManager.isLoggedIn()) {
-				FitbitAuthManager.logout()
+			if (fitBitAuth.isLoggedIn()) {
+				fitBitAuth.logout()
 				btnLogin.text = "login"
 			} else {
-				FitbitAuthManager.login(this)
+				fitBitAuth.login(this)
 			}
 		}
 
@@ -27,13 +30,13 @@ class MainActivity : AppCompatActivity(), FitbitAuthHandler {
 	}
 
 	private fun updateButton() {
-		btnLogin.text = if (FitbitAuthManager.isLoggedIn()) "logout" else "login"
+		btnLogin.text = if (fitBitAuth.isLoggedIn()) "logout" else "login"
 	}
 
 	override fun onNewIntent(intent: Intent?) {
 		super.onNewIntent(intent)
 		if (intent != null) {
-			FitbitAuthManager.handleIntent(this, intent)
+			fitBitAuth.handleIntent(this, intent)
 		}
 	}
 
@@ -42,7 +45,7 @@ class MainActivity : AppCompatActivity(), FitbitAuthHandler {
 			FitbitAuthResult.Success      -> {
 				Log.d(
 					"FitbitAuth",
-					"Login success! Scopes: ${FitbitAuthManager.getAccessToken().scopes.joinToString()}"
+					"Login success! Scopes: ${fitBitAuth.getAccessToken().scopes.joinToString()}"
 				)
 			}
 			is FitbitAuthResult.Error     -> {
