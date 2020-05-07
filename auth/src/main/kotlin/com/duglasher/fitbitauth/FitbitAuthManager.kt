@@ -52,8 +52,6 @@ class FitbitAuthManager(
             appendQueryParameter("state", state)
         }.build()
 
-
-
         CustomTabsHelper.openCustomTab(
             activity,
             customTabsIntent,

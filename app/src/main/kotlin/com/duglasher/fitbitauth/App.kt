@@ -6,12 +6,9 @@ import com.duglasher.fitbitauth.data.AuthorizationConfiguration
 
 class App : Application() {
 
-	lateinit var fitBitAuth: FitbitAuthManager
-		private set
-
 	override fun onCreate() {
 		super.onCreate()
-		fitBitAuth = FitbitAuthManager(
+		fitbitAuth = FitbitAuthManager(
 			this,
 			AuthorizationConfiguration.Builder()
 				.setCredentials(
@@ -23,6 +20,11 @@ class App : Application() {
 				.setExpiresIn(AuthorizationConfiguration.ExpiresIn.WEEK)
 				.build()
 		)
+	}
+
+	companion object {
+		lateinit var fitbitAuth: FitbitAuthManager
+			private set
 	}
 
 }
