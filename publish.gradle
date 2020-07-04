@@ -13,8 +13,8 @@ ext {
     library_keywords = ['android', 'library', 'fitbit', 'kotlin', 'coroutines']
     library_project_group = 'com.duglasher.fitbit'
     library_licenses = ["Unlicense"]
-    library_version = '1.0.1'
-    version_code = 1
+    library_version = '1.0.2'
+    version_code = 2
     min_sdk = 22
     target_sdk = 29
     compile_sdk = 29

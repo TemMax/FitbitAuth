@@ -1,1 +1,1 @@
--keepnames com.duglasher.fitbitauth.exceptions.** { *; }
+-keepnames class com.duglasher.fitbitauth.exceptions.** { *; }
