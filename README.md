@@ -156,4 +156,5 @@ And now let's authorize! Call
 ```
 App.fitBitAuth.login(this)
 ```
-
+<br/><br/>
+Special thanks to [Miha-x64](https://github.com/Miha-x64) for review.
