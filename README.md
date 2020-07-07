@@ -1,6 +1,6 @@
 # FitbitAuth
 
-[ ![Download](https://api.bintray.com/packages/temmax/Fitbit/Auth/images/download.svg?version=1.0.1) ](https://bintray.com/temmax/Fitbit/Auth/1.0.1/link)
+[ ![Download](https://api.bintray.com/packages/temmax/Fitbit/Auth/images/download.svg?version=1.0.2) ](https://bintray.com/temmax/Fitbit/Auth/1.0.2/link)
 [![Hits-of-Code](https://hitsofcode.com/github/TemMax/FitbitAuth)](https://hitsofcode.com/view/github/TemMax/FitbitAuth)
 [![API](https://img.shields.io/badge/API-22%2B-yellow.svg?style=flat)](https://android-arsenal.com/api?level=22)
 
@@ -21,7 +21,7 @@ allprojects {
 
 ```
 // Add this to app level build.gradle (or module)
-implementation 'com.duglasher.fitbit:auth:1.0.1'
+implementation 'com.duglasher.fitbit:auth:1.0.2'
 ```
 
 # Setup fitbit credentials
